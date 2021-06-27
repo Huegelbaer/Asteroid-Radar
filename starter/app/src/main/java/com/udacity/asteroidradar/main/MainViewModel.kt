@@ -12,6 +12,13 @@ class MainViewModel : ViewModel() {
     val asteroids: LiveData<List<Asteroid>>
         get() = _asteroids
 
+
+    private var _selectedAsteroid = MutableLiveData<Asteroid?>()
+
+    val selectedAsteroid: LiveData<Asteroid?>
+        get() = _selectedAsteroid
+
+
     init {
         _asteroids.value = listOf(
             Asteroid(1, "1", "2021-01-03",
@@ -29,5 +36,14 @@ class MainViewModel : ViewModel() {
             Asteroid(5, "5", "2021-01-07",
                 0.0, 0.2, 1.2, 1.4,
                 false))
+    }
+
+
+    fun onSelected(asteroid: Asteroid) {
+        _selectedAsteroid.value = asteroid
+    }
+
+    fun onNavigationCompleted() {
+        _selectedAsteroid.value = null
     }
 }
