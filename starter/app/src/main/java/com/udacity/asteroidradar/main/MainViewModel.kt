@@ -7,7 +7,7 @@ import com.udacity.asteroidradar.Asteroid
 
 class MainViewModel : ViewModel() {
 
-    var _asteroids = MutableLiveData<List<Asteroid>>()
+    private var _asteroids = MutableLiveData<List<Asteroid>>()
 
     val asteroids: LiveData<List<Asteroid>>
         get() = _asteroids
