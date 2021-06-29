@@ -3,7 +3,7 @@ package com.udacity.asteroidradar.database
 import android.content.Context
 import androidx.room.*
 
-@Database(entities = [AsteroidsDatabase::class], version = 1)
+@Database(entities = [DatabaseAsteroid::class], version = 1)
 abstract class AsteroidsDatabase: RoomDatabase() {
 
     abstract val asteroidDAO: AsteroidDAO
