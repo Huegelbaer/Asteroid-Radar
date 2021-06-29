@@ -1,11 +1,15 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.database.getDatabase
+import com.udacity.asteroidradar.model.Asteroid
 
-class MainViewModel : ViewModel() {
+class MainViewModel(val application: Application) : ViewModel() {
+
+    private val _database = getDatabase(application)
 
     private var _asteroids = MutableLiveData<List<Asteroid>>()
 
@@ -35,7 +39,8 @@ class MainViewModel : ViewModel() {
                 true),
             Asteroid(5, "5", "2021-01-07",
                 0.0, 0.2, 1.2, 1.4,
-                false))
+                false)
+        )
     }
 
 
