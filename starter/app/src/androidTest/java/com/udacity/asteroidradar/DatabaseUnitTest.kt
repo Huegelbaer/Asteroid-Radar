@@ -50,7 +50,7 @@ class DatabaseUnitTest {
         val asteroid2 = DatabaseAsteroid(1, "1", "2021-01-03",
             0.0, 0.2, 2.6, 1.4,
             false)
-        asteroidDao.insert(asteroid)
+        asteroidDao.insert(asteroid2)
 
         Assert.assertEquals(1.2, savedAsteroid.relativeVelocity, 0.0)
 
