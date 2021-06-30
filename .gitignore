@@ -15,3 +15,5 @@
 # gradle
 gradle/
 gradlew*
+
+starter/local.properties
