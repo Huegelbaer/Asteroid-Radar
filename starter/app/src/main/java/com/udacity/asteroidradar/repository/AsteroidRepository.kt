@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.api.NasaApi
@@ -20,9 +21,13 @@ class AsteroidRepository(private val database: AsteroidsDatabase) {
 
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
-            val jsonResult = NasaApi.retrofitService.getAsteroids()
-            val asteroids = parseAsteroidsJsonResult(JSONObject(jsonResult))
-            database.asteroidDAO.insertAll(asteroids.asDatabaseModel())
+            try {
+                val jsonResult = NasaApi.retrofitService.getAsteroids()
+                val asteroids = parseAsteroidsJsonResult(JSONObject(jsonResult))
+                database.asteroidDAO.insertAll(asteroids.asDatabaseModel())
+            } catch (e: Exception) {
+                Log.e("AsteroidRepository", "Refresh asteroids failed.", e.cause)
+            }
         }
     }
 }

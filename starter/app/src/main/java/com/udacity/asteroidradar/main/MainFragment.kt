@@ -15,18 +15,26 @@ import com.udacity.asteroidradar.databinding.FragmentMainBinding
 class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this, ViewModelFactory(requireActivity().application))
+        val activity = requireNotNull(activity)
+        ViewModelProvider(this, ViewModelFactory(activity.application))
             .get(MainViewModel::class.java)
     }
 
+    private lateinit var binding: FragmentMainBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = FragmentMainBinding.inflate(inflater)
+        binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
-
         binding.viewModel = viewModel
 
         setHasOptionsMenu(true)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val asteroidClickListener = AsteroidClickListener {
             viewModel.onSelected(it)
@@ -46,8 +54,6 @@ class MainFragment : Fragment() {
                 navigateToDetail(asteroid)
             }
         })
-
-        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
