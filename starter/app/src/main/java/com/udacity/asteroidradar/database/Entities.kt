@@ -39,3 +39,18 @@ fun List<DatabaseAsteroid>.asDomainModel(): List<Asteroid> {
         )
     }
 }
+
+fun List<Asteroid>.asDatabaseModel(): List<DatabaseAsteroid> {
+    return map {
+        DatabaseAsteroid(
+            it.id,
+            it.codename,
+            it.closeApproachDate,
+            it.absoluteMagnitude,
+            it.estimatedDiameter,
+            it.relativeVelocity,
+            it.distanceFromEarth,
+            it.isPotentiallyHazardous
+        )
+    }
+}

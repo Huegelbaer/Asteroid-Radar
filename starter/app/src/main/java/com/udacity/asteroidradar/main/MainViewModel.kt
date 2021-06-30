@@ -4,19 +4,21 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.api.NasaApi
+import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.model.PictureOfDay
+import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel() : ViewModel() {
+class MainViewModel(val application: Application) : ViewModel() {
 
-    private var _asteroids = MutableLiveData<List<Asteroid>>()
+    private val database = getDatabase(application)
+    private val repository = AsteroidRepository(database)
 
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
+    val asteroids = repository.asteroids
 
 
     private var _selectedAsteroid = MutableLiveData<Asteroid?>()
@@ -37,25 +39,8 @@ class MainViewModel() : ViewModel() {
         get() = _pictureOfDay
 
     init {
-        _asteroids.value = listOf(
-            Asteroid(1, "1", "2021-01-03",
-                0.0, 0.2, 1.2, 1.4,
-                false),
-            Asteroid(2, "2", "2021-01-04",
-                0.0, 0.2, 1.2, 1.4,
-                true),
-            Asteroid(3, "3", "2021-01-05",
-                0.0, 0.2, 1.2, 1.4,
-                false),
-            Asteroid(4, "4", "2021-01-06",
-                0.0, 0.2, 1.2, 1.4,
-                true),
-            Asteroid(5, "5", "2021-01-07",
-                0.0, 0.2, 1.2, 1.4,
-                false)
-        )
-
-        getPictureOfDay()
+        //getPictureOfDay()
+        getAsteroids()
     }
 
     private fun getPictureOfDay() {
@@ -75,6 +60,12 @@ class MainViewModel() : ViewModel() {
                     _pictureOfDay.value = null
                 }
             })
+        }
+    }
+
+    private fun getAsteroids() {
+        viewModelScope.launch {
+            repository.refreshAsteroids()
         }
     }
 
