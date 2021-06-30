@@ -1,23 +1,24 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.api.NasaApi
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.model.PictureOfDay
+import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel() : ViewModel() {
+class MainViewModel(val application: Application) : ViewModel() {
 
-    private var _asteroids = MutableLiveData<List<Asteroid>>()
+    private val database = getDatabase(application)
+    private val repository = AsteroidRepository(database)
 
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
+    val asteroids = repository.asteroids
 
 
     private var _selectedAsteroid = MutableLiveData<Asteroid?>()
@@ -64,8 +65,7 @@ class MainViewModel() : ViewModel() {
 
     private fun getAsteroids() {
         viewModelScope.launch {
-            val jsonResult = NasaApi.retrofitService.getAsteroids()
-            _asteroids.value = parseAsteroidsJsonResult(JSONObject(jsonResult))
+            repository.refreshAsteroids()
         }
     }
 
