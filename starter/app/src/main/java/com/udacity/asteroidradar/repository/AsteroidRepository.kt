@@ -3,6 +3,7 @@ package com.udacity.asteroidradar.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.NasaApi
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.database.AsteroidsDatabase
@@ -12,12 +13,30 @@ import com.udacity.asteroidradar.model.Asteroid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AsteroidRepository(private val database: AsteroidsDatabase) {
 
-    val asteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDAO.getAll()) {
-        it?.asDomainModel()
-    }
+    private val today: String
+        get() {
+            val formatter = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+            return formatter.format(Date())
+        }
+
+    private val seventhDay: String
+        get() {
+            val formatter = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+            calendar.add(Calendar.DAY_OF_YEAR, 7)
+            return formatter.format(calendar.time)
+        }
+
+    val asteroids: LiveData<List<Asteroid>> =
+        Transformations.map(database.asteroidDAO.getAsteroidsInPeriod(today, seventhDay)) {
+            it?.asDomainModel()
+        }
 
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
