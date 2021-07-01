@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.NasaApi
@@ -10,6 +11,7 @@ import com.udacity.asteroidradar.database.AsteroidsDatabase
 import com.udacity.asteroidradar.database.asDatabaseModel
 import com.udacity.asteroidradar.database.asDomainModel
 import com.udacity.asteroidradar.model.Asteroid
+import com.udacity.asteroidradar.model.PictureOfDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -33,6 +35,10 @@ class AsteroidRepository(private val database: AsteroidsDatabase) {
             return formatter.format(calendar.time)
         }
 
+    private var _pictureOfDay = MutableLiveData<PictureOfDay>()
+    val pictureOfDay: LiveData<PictureOfDay>
+        get() = _pictureOfDay
+
     val asteroids: LiveData<List<Asteroid>> =
         Transformations.map(database.asteroidDAO.getAsteroidsInPeriod(today, seventhDay)) {
             it?.asDomainModel()
@@ -46,6 +52,17 @@ class AsteroidRepository(private val database: AsteroidsDatabase) {
                 database.asteroidDAO.insertAll(asteroids.asDatabaseModel())
             } catch (e: Exception) {
                 Log.e("AsteroidRepository", "Refresh asteroids failed.", e.cause)
+            }
+        }
+    }
+
+    suspend fun refreshPictureOfDay() {
+        withContext(Dispatchers.IO) {
+            try {
+                val pictureOfDay = NasaApi.retrofitService.getPictureOfDay()
+                _pictureOfDay.value = pictureOfDay
+            } catch (e: Exception) {
+                Log.e("AsteroidRepository", "Refresh picture of day failed.", e.cause)
             }
         }
     }

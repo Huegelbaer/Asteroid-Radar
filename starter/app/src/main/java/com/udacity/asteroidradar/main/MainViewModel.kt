@@ -26,40 +26,21 @@ class MainViewModel(val application: Application) : ViewModel() {
     val selectedAsteroid: LiveData<Asteroid?>
         get() = _selectedAsteroid
 
-    private var _pictureOfDay = MutableLiveData<PictureOfDay?>()
-
-    val pictureOfDayUrl: LiveData<String?> = Transformations.map(_pictureOfDay) { picture ->
+    val pictureOfDayUrl = Transformations.map(repository.pictureOfDay) { picture ->
         if (picture?.mediaType == "image") {
             picture.url
         }
         null
     }
 
-    val pictureOfDay: LiveData<PictureOfDay?>
-        get() = _pictureOfDay
-
     init {
-        //getPictureOfDay()
+        getPictureOfDay()
         getAsteroids()
     }
 
     private fun getPictureOfDay() {
         viewModelScope.launch {
-            Log.d("MainViewModel", "Start loading picture of day")
-            NasaApi.retrofitService.getPictureOfDay().enqueue(object : Callback<PictureOfDay> {
-                override fun onResponse(
-                    call: Call<PictureOfDay>,
-                    response: Response<PictureOfDay>
-                ) {
-                    Log.d("MainViewModel", "Load picture of day succeed.")
-                    _pictureOfDay.value = response.body()
-                }
-
-                override fun onFailure(call: Call<PictureOfDay>, t: Throwable) {
-                    Log.d("MainViewModel", "Load picture of day failed.", t)
-                    _pictureOfDay.value = null
-                }
-            })
+            repository.refreshPictureOfDay()
         }
     }
 
