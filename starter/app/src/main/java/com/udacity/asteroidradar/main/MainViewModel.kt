@@ -26,9 +26,9 @@ class MainViewModel(val application: Application) : ViewModel() {
     val selectedAsteroid: LiveData<Asteroid?>
         get() = _selectedAsteroid
 
-    val pictureOfDayUrl = Transformations.map(repository.pictureOfDay) { picture ->
+    val pictureOfDayUrl: LiveData<String> = Transformations.map(repository.pictureOfDay) { picture ->
         if (picture?.mediaType == "image") {
-            picture.url
+            return@map picture.url
         }
         null
     }

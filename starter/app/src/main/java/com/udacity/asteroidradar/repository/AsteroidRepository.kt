@@ -60,7 +60,9 @@ class AsteroidRepository(private val database: AsteroidsDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 val pictureOfDay = NasaApi.retrofitService.getPictureOfDay()
-                _pictureOfDay.value = pictureOfDay
+                withContext(Dispatchers.Main) {
+                    _pictureOfDay.value = pictureOfDay
+                }
             } catch (e: Exception) {
                 Log.e("AsteroidRepository", "Refresh picture of day failed.", e.cause)
             }
