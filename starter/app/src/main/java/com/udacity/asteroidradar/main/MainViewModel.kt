@@ -1,17 +1,11 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
-import com.udacity.asteroidradar.api.NasaApi
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.model.Asteroid
-import com.udacity.asteroidradar.model.PictureOfDay
 import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainViewModel(val application: Application) : ViewModel() {
 
