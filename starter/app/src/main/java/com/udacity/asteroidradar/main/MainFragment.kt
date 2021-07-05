@@ -51,7 +51,11 @@ class MainFragment : Fragment() {
 
         viewModel.selectedAsteroid.observe(viewLifecycleOwner, Observer {
             it?.let { asteroid ->
-                navigateToDetail(asteroid)
+                val isMasterDetail = resources.getBoolean(R.bool.isMasterDetail)
+                if (isMasterDetail) {
+                } else {
+                    navigateToDetail(asteroid)
+                }
             }
         })
     }
