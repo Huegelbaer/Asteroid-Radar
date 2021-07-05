@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -13,6 +14,8 @@ import com.udacity.asteroidradar.ViewModelFactory
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val viewModel: MainViewModel by lazy {
         val activity = requireNotNull(activity)
@@ -53,6 +56,7 @@ class MainFragment : Fragment() {
             it?.let { asteroid ->
                 val isMasterDetail = resources.getBoolean(R.bool.isMasterDetail)
                 if (isMasterDetail) {
+                    sharedViewModel.selectedAsteroid.value = asteroid
                 } else {
                     navigateToDetail(asteroid)
                 }
