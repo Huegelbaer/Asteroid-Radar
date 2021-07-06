@@ -10,11 +10,21 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val application: Application) : ViewModel() {
 
+    enum class Filter { WEEK, TODAY, SAVED }
+
     private val database = getDatabase(application)
     private val repository = AsteroidRepository(database)
 
-    val asteroids = repository.asteroids
+    private var _filter = MutableLiveData<Filter>(Filter.SAVED)
 
+    val asteroids = Transformations.switchMap(_filter) {
+        return@switchMap when (it) {
+            Filter.WEEK -> repository.weekAsteroids
+            Filter.TODAY -> repository.todayAsteroids
+            Filter.SAVED -> repository.allAsteroids
+            else -> repository.allAsteroids
+        }
+    }
 
     private var _selectedAsteroid = MutableLiveData<Asteroid?>()
 
@@ -62,5 +72,9 @@ class MainViewModel(private val application: Application) : ViewModel() {
 
     fun onNavigationCompleted() {
         _selectedAsteroid.value = null
+    }
+
+    fun onSelected(filter: Filter) {
+        _filter.value = filter
     }
 }
