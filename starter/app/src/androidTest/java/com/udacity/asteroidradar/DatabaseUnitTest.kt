@@ -1,15 +1,15 @@
 package com.udacity.asteroidradar
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.udacity.asteroidradar.database.AsteroidDAO
 import com.udacity.asteroidradar.database.AsteroidsDatabase
 import com.udacity.asteroidradar.database.DatabaseAsteroid
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import java.io.IOException
 
@@ -34,6 +34,8 @@ class DatabaseUnitTest {
         db.close()
     }
 
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
     @Test
     fun insertAsteroid() {
         val asteroid = DatabaseAsteroid(1, "1", "2021-01-03",
@@ -42,7 +44,10 @@ class DatabaseUnitTest {
 
         asteroidDao.insert(asteroid)
 
-        var asteroids = asteroidDao.getAll()
+        val asteroids = asteroidDao.getAll()
+        // LiveData is null until someone observes it
+        asteroids.observeForever { }
+
         var savedAsteroid = asteroids.value?.first()
         Assert.assertEquals(asteroid, savedAsteroid)
 
@@ -53,12 +58,13 @@ class DatabaseUnitTest {
 
         Assert.assertEquals(1.2, savedAsteroid!!.relativeVelocity, 0.0)
 
-        asteroids = asteroidDao.getAll()
         savedAsteroid = asteroids.value?.first()
 
         Assert.assertEquals(2.6, savedAsteroid!!.relativeVelocity, 0.0)
     }
 
+    @get:Rule
+    val instantTaskExecutorRule2 = InstantTaskExecutorRule()
     @Test
     fun deleteOldAsteroids() {
         val asteroids: ArrayList<DatabaseAsteroid> = arrayListOf(
@@ -90,12 +96,14 @@ class DatabaseUnitTest {
         )
         asteroidDao.insertAll(asteroids)
 
-        var savedAsteroids = asteroidDao.getAll()
+        val savedAsteroids = asteroidDao.getAll()
+        // LiveData is null until someone observes it
+        savedAsteroids.observeForever {  }
+
         Assert.assertEquals(5, savedAsteroids.value?.count())
 
         asteroidDao.deleteAsteroidsBeforeDate("2021-07-02")
 
-        savedAsteroids = asteroidDao.getAll()
         Assert.assertEquals(2, savedAsteroids.value?.count())
     }
 }
