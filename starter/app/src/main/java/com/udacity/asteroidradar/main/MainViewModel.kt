@@ -21,20 +21,23 @@ class MainViewModel(private val application: Application) : ViewModel() {
     val selectedAsteroid: LiveData<Asteroid?>
         get() = _selectedAsteroid
 
-    val pictureOfDayContentDescription: LiveData<String> = Transformations.map(repository.pictureOfDay) { picture ->
-        picture?.let {
-            val formatter = application.getString(R.string.nasa_picture_of_day_content_description_format)
-            return@map String.format(formatter, it.title)
+    val pictureOfDayContentDescription: LiveData<String> =
+        Transformations.map(repository.pictureOfDay) { picture ->
+            picture?.let {
+                val formatter =
+                    application.getString(R.string.nasa_picture_of_day_content_description_format)
+                return@map String.format(formatter, it.title)
+            }
+            return@map application.getString(R.string.this_is_nasa_s_picture_of_day_showing_nothing_yet)
         }
-        return@map application.getString(R.string.this_is_nasa_s_picture_of_day_showing_nothing_yet)
-    }
 
-    val pictureOfDayUrl: LiveData<String> = Transformations.map(repository.pictureOfDay) { picture ->
-        if (picture?.mediaType == "image") {
-            return@map picture.url
+    val pictureOfDayUrl: LiveData<String> =
+        Transformations.map(repository.pictureOfDay) { picture ->
+            if (picture?.mediaType == "image") {
+                return@map picture.url
+            }
+            null
         }
-        null
-    }
 
     init {
         getPictureOfDay()

@@ -34,11 +34,14 @@ class DatabaseUnitTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Test
     fun insertAsteroid() {
-        val asteroid = DatabaseAsteroid(1, "1", "2021-01-03",
+        val asteroid = DatabaseAsteroid(
+            1, "1", "2021-01-03",
             0.0, 0.2, 1.2, 1.4,
-            false)
+            false
+        )
 
         asteroidDao.insert(asteroid)
 
@@ -49,9 +52,11 @@ class DatabaseUnitTest {
         var savedAsteroid = asteroids.value?.first()
         Assert.assertEquals(asteroid, savedAsteroid)
 
-        val asteroid2 = DatabaseAsteroid(1, "1", "2021-01-03",
+        val asteroid2 = DatabaseAsteroid(
+            1, "1", "2021-01-03",
             0.0, 0.2, 2.6, 1.4,
-            false)
+            false
+        )
         asteroidDao.insert(asteroid2)
 
         Assert.assertEquals(1.2, savedAsteroid!!.relativeVelocity, 0.0)
@@ -63,6 +68,7 @@ class DatabaseUnitTest {
 
     @get:Rule
     val instantTaskExecutorRule2 = InstantTaskExecutorRule()
+
     @Test
     fun deleteOldAsteroids() {
         val asteroids: ArrayList<DatabaseAsteroid> = arrayListOf(
@@ -96,7 +102,7 @@ class DatabaseUnitTest {
 
         val savedAsteroids = asteroidDao.getAll()
         // LiveData is null until someone observes it
-        savedAsteroids.observeForever {  }
+        savedAsteroids.observeForever { }
 
         Assert.assertEquals(5, savedAsteroids.value?.count())
 

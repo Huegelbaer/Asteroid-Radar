@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.udacity.asteroidradar.model.Asteroid
 
-class SharedViewModel: ViewModel() {
+class SharedViewModel : ViewModel() {
 
     val selectedAsteroid = MutableLiveData<Asteroid?>()
 }
