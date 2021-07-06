@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AsteroidPropertyTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/default_text_color</item>
+    </style>
+
+    <style name="AsteroidValueStyle" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/text_grey</item>
+    </style>
+
 </resources>
