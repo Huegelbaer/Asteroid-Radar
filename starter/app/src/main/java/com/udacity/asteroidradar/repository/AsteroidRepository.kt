@@ -68,4 +68,14 @@ class AsteroidRepository(private val database: AsteroidsDatabase) {
             }
         }
     }
+
+    suspend fun deleteOldAsteroids() {
+        withContext(Dispatchers.IO) {
+            try {
+                database.asteroidDAO.deleteAsteroidsBeforeDate(today)
+            } catch (e: Exception) {
+                Log.e("AsteroidRepository", "Delete asteroids older than today failed", e.cause)
+            }
+        }
+    }
 }
