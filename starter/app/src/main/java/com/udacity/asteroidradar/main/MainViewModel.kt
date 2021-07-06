@@ -8,7 +8,7 @@ import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
 
-class MainViewModel(val application: Application) : ViewModel() {
+class MainViewModel(private val application: Application) : ViewModel() {
 
     private val database = getDatabase(application)
     private val repository = AsteroidRepository(database)

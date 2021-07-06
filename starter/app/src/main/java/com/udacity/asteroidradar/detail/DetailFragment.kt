@@ -11,9 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentDetailBinding
-import com.udacity.asteroidradar.main.MainViewModel
 import com.udacity.asteroidradar.main.SharedViewModel
-import com.udacity.asteroidradar.model.Asteroid
 
 class DetailFragment : Fragment() {
 
